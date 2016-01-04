@@ -41,3 +41,6 @@ An object with the following properties:
  - `name`: string
  - `multiChannel`: boolean
  - `url`: string
+
+## License
+This project is licensed under the MIT License.

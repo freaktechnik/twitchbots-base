@@ -127,9 +127,7 @@ TwitchBots.prototype.getAllBotsByType = function(typeId) {
         })
     }
     else {
-        return Promise.resolve(this.bots.values().filter(function(bot) {
-            return bot.type == typeId;
-        });
+        return Promise.resolve(this.bots.values().filter(bot => bot.type == typeId));
     }
 };
 
