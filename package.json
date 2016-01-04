@@ -21,6 +21,9 @@
   "bugs": {
     "url": "https://github.com/freaktechnik/twitchbots-base/issues"
   },
+  "engines": {
+    "node": ">=4.0.0"
+  },
   "author": "Martin Giger (https://humanoids.be)",
   "license": "MIT"
 }
