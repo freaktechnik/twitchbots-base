@@ -1,8 +1,9 @@
 # twitchbots-base
-This is a base-module for using the https://twitchbots.info API with JS. It
-requires a request function to be passed in. For modules with a request method
-built in, see [jetpack-twitchbots](https://www.npmjs.com/package/jetpack-twitchbots)
-and [twitchbots-node](https://www.npmjs.com/package/twitchbots-node).
+This is a base-module for using the [twitchbots.info](https://twitchbots.info)
+API with JS. It requires a request function to be passed in. For modules with a
+request method built in, see
+[jetpack-twitchbots](https://www.npmjs.com/package/jetpack-twitchbots) and
+[twitchbots-node](https://www.npmjs.com/package/twitchbots-node).
 
 ## Usage
 To instantiate, construct the global export of the module, with one argument,
