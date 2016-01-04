@@ -14,6 +14,13 @@
     "chat",
     "helper"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/freaktechnik/twitchbots-base.git"
+  },
+  "bugs": {
+    "url": "https://github.com/freaktechnik/twitchbots-base/issues"
+  },
   "author": "Martin Giger (https://humanoids.be)",
   "license": "MIT"
 }
