@@ -16,7 +16,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/freaktechnik/twitchbots-base.git"
+    "url": "git+https://github.com/freaktechnik/twitchbots-base.git"
   },
   "bugs": {
     "url": "https://github.com/freaktechnik/twitchbots-base/issues"
@@ -25,5 +25,6 @@
     "node": ">=4.0.0"
   },
   "author": "Martin Giger (https://humanoids.be)",
-  "license": "MIT"
+  "license": "MIT",
+  "homepage": "https://github.com/freaktechnik/twitchbots-base#readme"
 }

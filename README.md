@@ -17,6 +17,7 @@ an object of the following form:
         });
     }
 }
+```
 
 ## Methods
 All methods resolve to promises.
