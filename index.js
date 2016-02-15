@@ -81,7 +81,7 @@ TwitchBots.prototype.getBots = function(usernames) {
         fetching = this.getBot(usersToFetch[0]);
     }
     else if(usersToFetch.length > 1) {
-        paginationHelper({
+        fetching = paginationHelper({
             url: BASE_URI + "bot/?limit=100&bots=" + usersToFetch.join(",") + "&offset=",
             request: this.request
         }).then((bots) => {
