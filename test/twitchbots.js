@@ -302,3 +302,11 @@ test("Get cached type", async (t) => {
     t.deepEqual(returnedType, internalType);
 });
 
+test.todo("Get bots with one cached and one fetched");
+test.todo("Get bots with two fetched");
+test.todo("Get bots with all cached");
+test.todo("Get all bots uncached");
+test.todo("Get all bots cached");
+test.todo("Get all bots by type uncached");
+test.todo("Get all bots by type cached");
+
