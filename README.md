@@ -1,4 +1,6 @@
 # twitchbots-base
+[![Build Status](https://travis-ci.org/freaktechnik/twitchbots-base.svg?branch=master)](https://travis-ci.org/freaktechnik/twitchbots-base) [![codecov](https://codecov.io/gh/freaktechnik/twitchbots-base/branch/master/graph/badge.svg)](https://codecov.io/gh/freaktechnik/twitchbots-base) [![Dependency Status](https://dependencyci.com/github/freaktechnik/twitchbots-base/badge)](https://dependencyci.com/github/freaktechnik/twitchbots-base)
+
 This is a base-module for using the [twitchbots.info](https://twitchbots.info)
 API with JS. It requires a request function to be passed in. For modules with a
 request method built in, see
