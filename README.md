@@ -28,8 +28,8 @@ The return values are explained later on.
 
  - `getBot(username)`: Bot
  - `getBots(usernames)`: array<Bot>
- - `getAllBots()`: array<Bot>
- - `getAllBotsByType(typeId)`: array<Bot>
+ - `getAllBots()`: array<Bot> (returns only true bots)
+ - `getAllBotsByType(typeId)`: array<Bot> (returns only true bots)
  - `getType(typeId)`: Type
 
 ## Return Values
