@@ -291,7 +291,7 @@ test("Get all bots uncached", async (t) => {
 });
 
 test("Get all bots expired cache", async (t) => {
-    t.plan(4);
+    t.plan(5);
     const allBotsRequest = (url) => {
         t.is(url, "https://api.twitchbots.info/v1/bot/all?limit=100&offset=0");
 
@@ -310,23 +310,27 @@ test("Get all bots expired cache", async (t) => {
     tb.cacheTimes.all = Date.now() - DAY;
     tb._addBot(getBot("foo"));
     tb._addBot(getBot("bar"));
+    tb._addUser("baz");
 
     const bots = await tb.getAllBots();
 
     t.is(bots.length, 1);
-    t.deepEqual(bots, _.values(tb.bots));
+    t.deepEqual(bots, _.values(tb.bots).filter((b) => b.isBot));
     t.false("_links" in bots[0]);
+    t.true("baz" in tb.bots);
 });
 
 test("Get all bots cached", async (t) => {
     const tb = new TwitchBots({ request });
 
     tb._addBot(getBot("test"));
+    tb._addUser("baz");
     tb.cacheTimes.all = Date.now();
 
     const bots = await tb.getAllBots();
 
     t.is(bots.length, 1);
+    t.deepEqual(bots, _.values(tb.bots).filter((b) => b.isBot));
 });
 
 test("Get all bots by type uncached", async (t) => {

@@ -117,13 +117,13 @@ TwitchBots.prototype.getAllBots = function() {
             request: this.request
         }).then((bots) => {
             // We got all bots, so we can delete the old ones.
-            this.bots = {};
+            this.bots = _.indexBy(_.values(this.bots).filter((b) => !b.isBot), "username");
             this.cacheTimes["all"] = Date.now();
             return bots.map((bot) => this._addBot(bot));
         });
     }
     else {
-        return Promise.resolve(_.values(this.bots));
+        return Promise.resolve(_.values(this.bots).filter((b) => b.isBot));
     }
 };
 
