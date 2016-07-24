@@ -69,6 +69,36 @@ test("Add user", (t) => {
     t.false(savedUser.isBot);
 });
 
+test("Convert bot to user", (t) => {
+    const username = "test";
+    const tb = new TwitchBots({ request });
+    const botVersion = tb._addBot(getBot(username));
+    
+    const returnedUser = tb._addUser(username);
+    
+    t.true(username in tb.bots);
+    const savedUser = tb.bots[username];
+    
+    t.deepEqual(returnedUser, savedUser);
+    t.false(savedUser.isBot);
+    t.is(savedUser.type, null);
+});
+
+test("Convert user to bot", (t) => {
+    const username = "test";
+    const tb = new TwitchBots({ request });
+    const userVersion = tb._addUser(username);
+    
+    const returnedBot = tb._addBot(getBot(username));
+    
+    t.true(username in tb.bots);
+    const savedBot = tb.bots[username];
+    
+    t.deepEqual(savedBot, returnedBot);
+    t.true(savedBot.isBot);
+    t.not(savedBot.type, null);
+});
+
 test("Get existing uncached bot", async (t) => {
     t.plan(3);
     const username = "test";
