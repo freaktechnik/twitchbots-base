@@ -8,6 +8,7 @@
 "use strict";
 
 const paginationHelper = require("./pagination");
+const _ = require("underscore");
 
 const DAY = 1000 * 60 * 60 * 24;
 const WEEK = 7 * DAY;
@@ -28,12 +29,20 @@ TwitchBots.prototype.isTypeExpired = function(typeId) {
     return Date.now() - this.types[typeId]._timestamp >= DAY;
 };
 
+TwitchBots.prototype.isRequestExpired = function(typeId) {
+    return Date.now() - this.cacheTimes[typeId] >= DAY;
+};
+
 TwitchBots.prototype.hasValidBot = function(username) {
     return username in this.bots && !this.isBotExpired(username);
 };
 
 TwitchBots.prototype.hasValidType = function(typeId) {
     return typeId in this.types && !this.isTypeExpired(typeId);
+};
+
+TwitchBots.prototype.hasValidCachedRequest = function(typeId) {
+    return typeId in this.cacheTimes && !this.isRequestExpired(typeId);
 };
 
 TwitchBots.prototype._addBot = function(bot) {
@@ -102,22 +111,24 @@ TwitchBots.prototype.getBots = function(usernames) {
 };
 
 TwitchBots.prototype.getAllBots = function() {
-    if(Date.now() - this.cacheTimes["all"] >= DAY) {
+    if(!this.hasValidCachedRequest("all")) {
         return paginationHelper({
             url: BASE_URI + "bot/all?limit=100&offset=",
             request: this.request
         }).then((bots) => {
+            // We got all bots, so we can delete the old ones.
+            this.bots = {};
             this.cacheTimes["all"] = Date.now();
             return bots.map((bot) => this._addBot(bot));
         });
     }
     else {
-        return Promise.resolve(this.bots.values());
+        return Promise.resolve(_.values(this.bots));
     }
 };
 
 TwitchBots.prototype.getAllBotsByType = function(typeId) {
-    if(Date.now() - this.cacheTimes[typeId] >= DAY) {
+    if(!this.hasValidCachedRequest(typeId)) {
         return paginationHelper({
             url: BASE_URI + "bot/all?limit=100&type=" + typeId + "&offset=",
             request: this.request
@@ -127,7 +138,7 @@ TwitchBots.prototype.getAllBotsByType = function(typeId) {
         })
     }
     else {
-        return Promise.resolve(this.bots.values().filter(bot => bot.type == typeId));
+        return Promise.resolve(_.values(this.bots).filter(bot => bot.type == typeId));
     }
 };
 
