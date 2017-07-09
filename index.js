@@ -10,7 +10,7 @@
 const paginationHelper = require("./pagination"),
     _ = require("underscore"),
 
-    DAY = 1000 * 60 * 60 * 4,
+    DAY = 1000 * 60 * 60 * 24,
     WEEK = 7 * DAY,
     BASE_URI = "https://api.twitchbots.info/v1/";
 
