@@ -1,10 +1,10 @@
 import test from 'ava';
-import PaginationHelper from '../pagination';
+import paginationHelper from '../pagination';
 
 test("Test paginationhelper", async (t) => {
     t.plan(5);
 
-    const result = await PaginationHelper({
+    const result = await paginationHelper({
         request: (url) => {
             if(url == "https://localhost?offset=0") {
                 t.pass("First call had the correct URL");
@@ -42,7 +42,7 @@ test("Test paginationhelper", async (t) => {
             }
             else {
                 t.fail();
-                return Promise.reject("Not a valid URL");
+                return Promise.reject(new Error("Not a valid URL"));
             }
         },
         url: "https://localhost?offset="

@@ -1,7 +1,7 @@
 import test from 'ava';
 import TwitchBots from '../';
 
-const DAY = 60 * 60 * 1000 * 24
+const DAY = 60 * 60 * 1000 * 24;
 const WEEK = DAY * 7;
 const request = (url) => Promise.reject(url);
 
@@ -139,4 +139,3 @@ test("Expired request is not valid", (t) => {
 
     t.false(tb.hasValidCachedRequest("all"));
 });
-

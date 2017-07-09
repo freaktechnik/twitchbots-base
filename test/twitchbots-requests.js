@@ -2,7 +2,7 @@ import test from 'ava';
 import TwitchBots from '../';
 import _ from 'underscore';
 
-const DAY = 60 * 60 * 1000 * 24
+const DAY = 60 * 60 * 1000 * 24;
 const WEEK = DAY * 7;
 const request = (url) => Promise.reject(url);
 const getBot = (username, type = 0) => {
@@ -11,8 +11,8 @@ const getBot = (username, type = 0) => {
         channel: null,
         type,
         _links: {
-            self: "https://api.twitchbots.info/v1/bot/"+username,
-            type: "https://api.twitchbots.info/v1/type/"+type
+            self: "https://api.twitchbots.info/v1/bot/" + username,
+            type: "https://api.twitchbots.info/v1/type/" + type
         }
     };
 };
@@ -24,8 +24,8 @@ const getType = (id) => {
         multiChannel: true,
         url: "https://www.nightbot.tv",
         _links: {
-            self: "https://api.twitchbots.info/v1/type/"+id,
-            bots: "https://api.twitchbots.info/v1/bot/all?type="+id
+            self: "https://api.twitchbots.info/v1/type/" + id,
+            bots: "https://api.twitchbots.info/v1/bot/all?type=" + id
         }
     };
 };
@@ -72,7 +72,7 @@ test("Add user", (t) => {
 test("Convert bot to user", (t) => {
     const username = "test";
     const tb = new TwitchBots({ request });
-    const botVersion = tb._addBot(getBot(username));
+    tb._addBot(getBot(username));
 
     const returnedUser = tb._addUser(username);
 
@@ -87,7 +87,7 @@ test("Convert bot to user", (t) => {
 test("Convert user to bot", (t) => {
     const username = "test";
     const tb = new TwitchBots({ request });
-    const userVersion = tb._addUser(username);
+    tb._addUser(username);
 
     const returnedBot = tb._addBot(getBot(username));
 
@@ -103,8 +103,8 @@ test("Get existing uncached bot", async (t) => {
     t.plan(3);
     const username = "test";
     const requestBot = (url) => {
-        t.is(url, "https://api.twitchbots.info/v1/bot/"+username);
-        return Promise.resolve(getBot(username))
+        t.is(url, "https://api.twitchbots.info/v1/bot/" + username);
+        return Promise.resolve(getBot(username));
     };
     const tb = new TwitchBots({ request: requestBot });
 
@@ -119,7 +119,7 @@ test("Get expired cached bot", async (t) => {
     const creationTS = Date.now() - WEEK;
     const bot = getBot("test");
     const requestBot = (url) => {
-        t.is(url, "https://api.twitchbots.info/v1/bot/"+bot.username);
+        t.is(url, "https://api.twitchbots.info/v1/bot/" + bot.username);
         return Promise.resolve(bot);
     };
 
@@ -148,7 +148,7 @@ test("Get uncached user", async (t) => {
     t.plan(3);
     const username = "test";
     const requestUser = (url) => {
-        t.is(url, "https://api.twitchbots.info/v1/bot/"+username);
+        t.is(url, "https://api.twitchbots.info/v1/bot/" + username);
         return Promise.reject({
             code: 404
         });
@@ -163,7 +163,7 @@ test("Get uncached user", async (t) => {
 });
 
 test("Get bot throws network error", (t) => {
-    const requestUser = (url) => {
+    const requestUser = () => {
         return Promise.reject({
             code: 500
         });
@@ -173,7 +173,7 @@ test("Get bot throws network error", (t) => {
 });
 
 test("Get type throws network error", (t) => {
-    const requestType = (url) => {
+    const requestType = () => {
         return Promise.reject({
             code: 404
         });
@@ -211,7 +211,7 @@ test("Get cached expired type", async (t) => {
     const createdTS = Date.now() - DAY;
     const type = getType(0);
     const requestType = (url) => {
-        t.is(url, "https://api.twitchbots.info/v1/type/"+type.id);
+        t.is(url, "https://api.twitchbots.info/v1/type/" + type.id);
         return Promise.resolve(type);
     };
     const tb = new TwitchBots({ request: requestType });
@@ -368,17 +368,17 @@ test("Get all bots by type uncached", async (t) => {
     const type = 1;
     const beforeTS = Date.now();
     const requestBots = (url) => {
-        t.is(url, "https://api.twitchbots.info/v1/bot/all?limit=100&type="+type+"&offset=0");
+        t.is(url, "https://api.twitchbots.info/v1/bot/all?limit=100&type=" + type + "&offset=0");
 
         return Promise.resolve({
             bots: [
                 getBot("test", type)
             ],
             _links: {
-                self: "https://api.twitchbots.info/v1/bot/all?limit=100&type="+type+"&offset=0",
+                self: "https://api.twitchbots.info/v1/bot/all?limit=100&type=" + type + "&offset=0",
                 next: null,
                 prev: null,
-                type: "https://api.twitchbots.info/v1/type/"+type
+                type: "https://api.twitchbots.info/v1/type/" + type
             },
             offset: 0,
             limit: 100
@@ -400,17 +400,17 @@ test("Get all bots by type expired cache", async (t) => {
     const type = 1;
     const beforeTS = Date.now() - DAY;
     const requestBots = (url) => {
-        t.is(url, "https://api.twitchbots.info/v1/bot/all?limit=100&type="+type+"&offset=0");
+        t.is(url, "https://api.twitchbots.info/v1/bot/all?limit=100&type=" + type + "&offset=0");
 
         return Promise.resolve({
             bots: [
                 getBot("test", type)
             ],
             _links: {
-                self: "https://api.twitchbots.info/v1/bot/all?limit=100&type="+type+"&offset=0",
+                self: "https://api.twitchbots.info/v1/bot/all?limit=100&type=" + type + "&offset=0",
                 next: null,
                 prev: null,
-                type: "https://api.twitchbots.info/v1/type/"+type
+                type: "https://api.twitchbots.info/v1/type/" + type
             },
             offset: 0,
             limit: 100

@@ -18,7 +18,7 @@ function PaginationHelper(options) {
                 return getPage(offset + response.limit);
             }
         });
-    }
+    };
     return getPage(0).then(() => result);
 }
 

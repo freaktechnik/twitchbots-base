@@ -7,12 +7,12 @@
 
 "use strict";
 
-const paginationHelper = require("./pagination");
-const _ = require("underscore");
+const paginationHelper = require("./pagination"),
+    _ = require("underscore"),
 
-const DAY = 1000 * 60 * 60 * 24;
-const WEEK = 7 * DAY;
-const BASE_URI = "https://api.twitchbots.info/v1/";
+    DAY = 1000 * 60 * 60 * 4,
+    WEEK = 7 * DAY,
+    BASE_URI = "https://api.twitchbots.info/v1/";
 
 function TwitchBots(options) {
     this.request = options.request;
@@ -55,8 +55,8 @@ TwitchBots.prototype._addBot = function(bot) {
 };
 
 TwitchBots.prototype._addUser = function(username) {
-    var user = {
-        username: username,
+    const user = {
+        username,
         type: null,
         isBot: false,
         _timestamp: Date.now()
@@ -118,7 +118,7 @@ TwitchBots.prototype.getAllBots = function() {
         }).then((bots) => {
             // We got all bots, so we can delete the old ones.
             this.bots = _.indexBy(_.values(this.bots).filter((b) => !b.isBot), "username");
-            this.cacheTimes["all"] = Date.now();
+            this.cacheTimes.all = Date.now();
             return bots.map((bot) => this._addBot(bot));
         });
     }
@@ -135,10 +135,10 @@ TwitchBots.prototype.getAllBotsByType = function(typeId) {
         }).then((bots) => {
             this.cacheTimes[typeId] = Date.now();
             return bots.map((bot) => this._addBot(bot));
-        })
+        });
     }
     else {
-        return Promise.resolve(_.values(this.bots).filter(bot => bot.type == typeId));
+        return Promise.resolve(_.values(this.bots).filter((bot) => bot.type == typeId));
     }
 };
 
