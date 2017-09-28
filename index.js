@@ -10,9 +10,11 @@
 const paginationHelper = require("./pagination"),
     _ = require("underscore"),
 
-    DAY = 1000 * 60 * 60 * 24,
-    WEEK = 7 * DAY,
-    BASE_URI = "https://api.twitchbots.info/v1/";
+    DAY = 86400000,
+    WEEK = 604800000,
+    BASE_URI = "https://api.twitchbots.info/v1/",
+    NOT_FOUND = 404,
+    ONE_LENGTH = 1;
 
 function TwitchBots(options) {
     this.request = options.request;
@@ -68,30 +70,27 @@ TwitchBots.prototype._addUser = function(username) {
 
 TwitchBots.prototype.getBot = function(username) {
     if(!this.hasValidBot(username)) {
-        return this.request(BASE_URI + "bot/" + username).then((response) => {
-            return this._addBot(response);
-        }, (error) => {
-            if(error.code == 404) {
+        return this.request(`${BASE_URI}bot/${username}`).then((response) => this._addBot(response), (error) => {
+            if(error.code == NOT_FOUND) {
                 return this._addUser(username);
             }
             throw error;
         });
     }
-    else {
-        return Promise.resolve(this.bots[username]);
-    }
+
+    return Promise.resolve(this.bots[username]);
 };
 
 TwitchBots.prototype.getBots = function(usernames) {
     const usersToFetch = usernames.filter((username) => !this.hasValidBot(username));
 
     let fetching;
-    if(usersToFetch.length == 1) {
-        fetching = this.getBot(usersToFetch[0]);
+    if(usersToFetch.length === ONE_LENGTH) {
+        fetching = this.getBot(usersToFetch.shift());
     }
-    else if(usersToFetch.length > 1) {
+    else if(usersToFetch.length > ONE_LENGTH) {
         fetching = paginationHelper({
-            url: BASE_URI + "bot/?limit=100&bots=" + usersToFetch.join(",") + "&offset=",
+            url: `${BASE_URI}bot/?limit=100&bots=${usersToFetch.join(",")}&offset=`,
             request: this.request
         }).then((bots) => {
             bots.forEach((bot) => {
@@ -113,7 +112,7 @@ TwitchBots.prototype.getBots = function(usernames) {
 TwitchBots.prototype.getAllBots = function() {
     if(!this.hasValidCachedRequest("all")) {
         return paginationHelper({
-            url: BASE_URI + "bot/all?limit=100&offset=",
+            url: `${BASE_URI}bot/all?limit=100&offset=`,
             request: this.request
         }).then((bots) => {
             // We got all bots, so we can delete the old ones.
@@ -122,29 +121,27 @@ TwitchBots.prototype.getAllBots = function() {
             return bots.map((bot) => this._addBot(bot));
         });
     }
-    else {
-        return Promise.resolve(_.values(this.bots).filter((b) => b.isBot));
-    }
+
+    return Promise.resolve(_.values(this.bots).filter((b) => b.isBot));
 };
 
 TwitchBots.prototype.getAllBotsByType = function(typeId) {
     if(!this.hasValidCachedRequest(typeId)) {
         return paginationHelper({
-            url: BASE_URI + "bot/all?limit=100&type=" + typeId + "&offset=",
+            url: `${BASE_URI}bot/all?limit=100&type=${typeId}&offset=`,
             request: this.request
         }).then((bots) => {
             this.cacheTimes[typeId] = Date.now();
             return bots.map((bot) => this._addBot(bot));
         });
     }
-    else {
-        return Promise.resolve(_.values(this.bots).filter((bot) => bot.type == typeId));
-    }
+
+    return Promise.resolve(_.values(this.bots).filter((bot) => bot.type == typeId));
 };
 
 TwitchBots.prototype.getType = function(typeId) {
     if(!this.hasValidType(typeId)) {
-        return this.request(BASE_URI + "type/" + typeId).then((response) => {
+        return this.request(`${BASE_URI}type/${typeId}`).then((response) => {
             response._timestamp = Date.now();
             delete response._links;
             this.types[typeId] = response;
@@ -152,9 +149,8 @@ TwitchBots.prototype.getType = function(typeId) {
             return response;
         });
     }
-    else {
-        return Promise.resolve(this.types[typeId]);
-    }
+
+    return Promise.resolve(this.types[typeId]);
 };
 
 module.exports = TwitchBots;

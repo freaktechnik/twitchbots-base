@@ -9,9 +9,7 @@ test("Test paginationhelper", async (t) => {
             if(url == "https://localhost?offset=0") {
                 t.pass("First call had the correct URL");
                 return Promise.resolve({
-                    bots: [
-                        "foo"
-                    ],
+                    bots: [ "foo" ],
                     _links: {
                         next: "https://localhost?offset=100"
                     },
@@ -21,9 +19,7 @@ test("Test paginationhelper", async (t) => {
             else if(url == "https://localhost?offset=100") {
                 t.pass("Second call had the correct url");
                 return Promise.resolve({
-                    bots: [
-                        "bar"
-                    ],
+                    bots: [ "bar" ],
                     _links: {
                         next: "https://localhost?offset=200"
                     },
@@ -40,14 +36,16 @@ test("Test paginationhelper", async (t) => {
                     limit: 100
                 });
             }
-            else {
-                t.fail();
-                return Promise.reject(new Error("Not a valid URL"));
-            }
+
+            t.fail();
+            return Promise.reject(new Error("Not a valid URL"));
         },
         url: "https://localhost?offset="
     });
 
     t.is(result.length, 2);
-    t.deepEqual(result, [ "foo", "bar" ]);
+    t.deepEqual(result, [
+        "foo",
+        "bar"
+    ]);
 });
