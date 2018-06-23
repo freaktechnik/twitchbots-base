@@ -34,7 +34,7 @@
     "@freaktechnik/eslint-config-test": "^6.0.0",
     "ava": "^0.25.0",
     "codecov": "^3.0.0",
-    "eslint": "^4.7.2",
+    "eslint": "^5.0.0",
     "nyc": "^11.0.3"
   },
   "dependencies": {
