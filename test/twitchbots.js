@@ -1,5 +1,5 @@
 import test from 'ava';
-import TwitchBots from '../';
+import TwitchBots from '..';
 
 const DAY = 60 * 60 * 1000 * 24;
 const WEEK = DAY * 7;

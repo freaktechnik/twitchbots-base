@@ -1,5 +1,5 @@
 import test from 'ava';
-import TwitchBots from '../';
+import TwitchBots from '..';
 import _ from 'underscore';
 
 const DAY = 60 * 60 * 1000 * 24;
