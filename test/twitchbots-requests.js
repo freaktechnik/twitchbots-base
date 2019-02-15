@@ -163,7 +163,7 @@ test("Get bot throws network error", (t) => {
         code: 500
     });
     const tb = new TwitchBots({ request: requestUser });
-    return t.throws(tb.getBot("test"));
+    return t.throwsAsync(tb.getBot("test"));
 });
 
 test("Get type throws network error", (t) => {
@@ -171,7 +171,7 @@ test("Get type throws network error", (t) => {
         code: 404
     });
     const tb = new TwitchBots({ request: requestType });
-    return t.throws(tb.getType(-1));
+    return t.throwsAsync(tb.getType(-1));
 });
 
 test("Get uncached existing type", async (t) => {
