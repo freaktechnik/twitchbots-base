@@ -2,21 +2,19 @@
  * https://twitchbots.info generic API consumer
  * @author Martin Giger
  * @license MIT
- * @module twitchbots-base
+ * @module twitchbots
  */
 
 "use strict";
 
 //TODO have an API definition that can check params and all that...
+//TODO optional hard cache
+//TODO auto paginate (both pages and more than 100 ids)
 
 const fetch = require("isomorphic-fetch"),
 
-    DAY = 86400000,
-    WEEK = 604800000,
     BASE_URI = "https://api.twitchbots.info/v2/",
     OK = 200,
-    NOT_FOUND = 404,
-    ONE_LENGTH = 1,
     API_VERSIONS = [
         "Justin.tv API",
         "Kraken v1",
@@ -51,7 +49,6 @@ class TwitchBots {
 
     async getBots(filter) {
         const params = new URLSearchParams(filter);
-        //TODO auto paginate (both pages and more than 100 ids)
         const res = await fetch(`${BASE_URI}bot/?${params.toString()}`);
         if(res.ok && res.status == OK) {
             const data = await res.json();

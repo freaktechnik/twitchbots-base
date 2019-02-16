@@ -1,7 +1,7 @@
 {
-  "name": "twitchbots-base",
+  "name": "twitchbots",
   "version": "1.0.5",
-  "description": "Generic API consumer for https://twitchbots.info. Independent of request method.",
+  "description": "API wrapper for https://twitchbots.info.",
   "main": "index.js",
   "scripts": {
     "test": "npm run lint && nyc ava",
