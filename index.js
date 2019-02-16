@@ -7,150 +7,84 @@
 
 "use strict";
 
-const paginationHelper = require("./pagination"),
-    _ = require("underscore"),
+//TODO have an API definition that can check params and all that...
+
+const fetch = require("isomorphic-fetch"),
 
     DAY = 86400000,
     WEEK = 604800000,
-    BASE_URI = "https://api.twitchbots.info/v1/",
+    BASE_URI = "https://api.twitchbots.info/v2/",
+    OK = 200,
     NOT_FOUND = 404,
-    ONE_LENGTH = 1;
+    ONE_LENGTH = 1,
+    API_VERSIONS = [
+        "Justin.tv API",
+        "Kraken v1",
+        "Kraken v3",
+        "Kraken v5",
+        "Helix",
+        "Unsupported"
+    ],
+    BUSINESS_MODELS = [
+        "Free",
+        "Lifetime license",
+        "Subscriptions",
+        "Transaction fees"
+    ];
 
-function TwitchBots(options) {
-    this.request = options.request;
-    this.bots = {};
-    this.types = {};
-    this.cacheTimes = {};
+class TwitchBots {
+    static get API_VERSIONS() {
+        return API_VERSIONS;
+    }
+
+    static get BUSINESS_MODELS() {
+        return BUSINESS_MODELS;
+    }
+
+    async getBot(id) {
+        const res = await fetch(`${BASE_URI}bot/${id}`);
+        if(res.ok && res.status == OK) {
+            return res.json();
+        }
+        throw new Error(`${id} is not a bot`);
+    }
+
+    async getBots(filter) {
+        const params = new URLSearchParams(filter);
+        //TODO auto paginate (both pages and more than 100 ids)
+        const res = await fetch(`${BASE_URI}bot/?${params.toString()}`);
+        if(res.ok && res.status == OK) {
+            const data = await res.json();
+            return data.bots;
+        }
+        throw new Error("Error fetching bots");
+    }
+
+    async getType(id) {
+        const res = await fetch(`${BASE_URI}type/${id}`);
+        if(res.ok && res.status == OK) {
+            return res.json();
+        }
+        throw new Error(`No type with ID ${id}`);
+    }
+
+    async getTypes(filter) {
+        const params = new URLSearchParams(filter);
+        const res = await fetch(`${BASE_URI}type/?${params.toString()}`);
+        if(res.ok && res.status == OK) {
+            const data = await res.json();
+            return data.types;
+        }
+        throw new Error("Error fetching types");
+    }
+
+    async getBotsForChannel(channelId) {
+        const res = await fetch(`${BASE_URI}channel/${channelId}/bots`);
+        if(res.ok && res.status == OK) {
+            const data = await res.json();
+            return data.bots;
+        }
+    }
 }
-
-TwitchBots.prototype.isBotExpired = function(username) {
-    return Date.now() - this.bots[username]._timestamp >= WEEK;
-};
-
-TwitchBots.prototype.isTypeExpired = function(typeId) {
-    return Date.now() - this.types[typeId]._timestamp >= DAY;
-};
-
-TwitchBots.prototype.isRequestExpired = function(typeId) {
-    return Date.now() - this.cacheTimes[typeId] >= DAY;
-};
-
-TwitchBots.prototype.hasValidBot = function(username) {
-    return username in this.bots && !this.isBotExpired(username);
-};
-
-TwitchBots.prototype.hasValidType = function(typeId) {
-    return typeId in this.types && !this.isTypeExpired(typeId);
-};
-
-TwitchBots.prototype.hasValidCachedRequest = function(typeId) {
-    return typeId in this.cacheTimes && !this.isRequestExpired(typeId);
-};
-
-TwitchBots.prototype._addBot = function(bot) {
-    bot._timestamp = Date.now();
-    bot.isBot = true;
-    delete bot._links;
-    this.bots[bot.username] = bot;
-
-    return bot;
-};
-
-TwitchBots.prototype._addUser = function(username) {
-    const user = {
-        username,
-        type: null,
-        isBot: false,
-        _timestamp: Date.now()
-    };
-    this.bots[username] = user;
-
-    return user;
-};
-
-TwitchBots.prototype.getBot = function(username) {
-    if(!this.hasValidBot(username)) {
-        return this.request(`${BASE_URI}bot/${username}`).then((response) => this._addBot(response), (error) => {
-            if(error.code == NOT_FOUND) {
-                return this._addUser(username);
-            }
-            throw error;
-        });
-    }
-
-    return Promise.resolve(this.bots[username]);
-};
-
-TwitchBots.prototype.getBots = function(usernames) {
-    const usersToFetch = usernames.filter((username) => !this.hasValidBot(username));
-
-    let fetching;
-    if(usersToFetch.length === ONE_LENGTH) {
-        fetching = this.getBot(usersToFetch.shift());
-    }
-    else if(usersToFetch.length > ONE_LENGTH) {
-        fetching = paginationHelper({
-            url: `${BASE_URI}bot/?limit=100&bots=${usersToFetch.join(",")}&offset=`,
-            request: this.request
-        }).then((bots) => {
-            bots.forEach((bot) => {
-                this._addBot(bot);
-            });
-
-            usernames
-                .filter((name) => bots.every((bot) => bot.username != name))
-                .forEach((username) => this._addUser(username));
-        });
-    }
-    else {
-        fetching = Promise.resolve();
-    }
-
-    return fetching.then(() => usernames.map((username) => this.bots[username]));
-};
-
-TwitchBots.prototype.getAllBots = function() {
-    if(!this.hasValidCachedRequest("all")) {
-        return paginationHelper({
-            url: `${BASE_URI}bot/all?limit=100&offset=`,
-            request: this.request
-        }).then((bots) => {
-            // We got all bots, so we can delete the old ones.
-            this.bots = _.indexBy(_.values(this.bots).filter((b) => !b.isBot), "username");
-            this.cacheTimes.all = Date.now();
-            return bots.map((bot) => this._addBot(bot));
-        });
-    }
-
-    return Promise.resolve(_.values(this.bots).filter((b) => b.isBot));
-};
-
-TwitchBots.prototype.getAllBotsByType = function(typeId) {
-    if(!this.hasValidCachedRequest(typeId)) {
-        return paginationHelper({
-            url: `${BASE_URI}bot/all?limit=100&type=${typeId}&offset=`,
-            request: this.request
-        }).then((bots) => {
-            this.cacheTimes[typeId] = Date.now();
-            return bots.map((bot) => this._addBot(bot));
-        });
-    }
-
-    return Promise.resolve(_.values(this.bots).filter((bot) => bot.type == typeId));
-};
-
-TwitchBots.prototype.getType = function(typeId) {
-    if(!this.hasValidType(typeId)) {
-        return this.request(`${BASE_URI}type/${typeId}`).then((response) => {
-            response._timestamp = Date.now();
-            delete response._links;
-            this.types[typeId] = response;
-
-            return response;
-        });
-    }
-
-    return Promise.resolve(this.types[typeId]);
-};
 
 module.exports = TwitchBots;

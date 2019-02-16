@@ -26,22 +26,20 @@
     "url": "https://github.com/freaktechnik/twitchbots-base/issues"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.0.0"
   },
   "author": "Martin Giger (https://humanoids.be)",
   "license": "MIT",
   "homepage": "https://github.com/freaktechnik/twitchbots-base#readme",
   "devDependencies": {
-    "@freaktechnik/eslint-config-node": "^6.0.0",
-    "@freaktechnik/eslint-config-test": "^6.0.0",
+    "@freaktechnik/eslint-config-node": "^6.6.2",
+    "@freaktechnik/eslint-config-test": "^6.6.2",
     "ava": "^3.0.0",
-    "codecov": "^3.0.0",
-    "eslint": "^5.1.0",
+    "codecov": "^3.2.0",
+    "eslint": "^5.14.0",
     "nyc": "^15.0.0"
   },
   "dependencies": {
-    "underscore": "^1.9.1",
-    "snyk": "^1.319.2"
-  },
-  "snyk": true
+    "isomorphic-fetch": "^2.2.1"
+  }
 }
