@@ -31,7 +31,7 @@
   "homepage": "https://github.com/freaktechnik/twitchbots-base#readme",
   "devDependencies": {
     "@freaktechnik/eslint-config-node": "^6.0.0",
-    "@freaktechnik/eslint-config-test": "^6.0.0",
+    "@freaktechnik/eslint-config-test": "^7.0.0",
     "ava": "^1.2.1",
     "codecov": "^3.0.0",
     "eslint": "^5.1.0",
