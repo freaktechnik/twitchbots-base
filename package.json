@@ -6,7 +6,9 @@
   "scripts": {
     "test": "npm run lint && nyc ava",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "lint": "eslint pagination.js index.js test/ --ext js,json"
+    "lint": "eslint pagination.js index.js test/ --ext js,json",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "keywords": [
     "twitch",
@@ -35,9 +37,11 @@
     "ava": "^3.0.0",
     "codecov": "^3.0.0",
     "eslint": "^5.1.0",
-    "nyc": "^14.0.0"
+    "nyc": "^15.0.0"
   },
   "dependencies": {
-    "underscore": "^1.9.1"
-  }
+    "underscore": "^1.9.1",
+    "snyk": "^1.316.2"
+  },
+  "snyk": true
 }
