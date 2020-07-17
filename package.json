@@ -6,9 +6,7 @@
   "scripts": {
     "test": "npm run lint && nyc ava",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov",
-    "lint": "eslint pagination.js index.js test/ --ext js,json",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "lint": "eslint pagination.js index.js test/ --ext js,json"
   },
   "keywords": [
     "twitch",
